@@ -99,7 +99,7 @@ export default function AIInsightsPage() {
                     <div className="bg-surface-50 rounded-lg p-3 border border-surface-100">
                       <p className="text-xs font-semibold text-surface-700 mb-2 uppercase tracking-wide">Recommended Actions:</p>
                       <ul className="space-y-2">
-                        {insight.recommendations.map((rec, i) => (
+                        {insight.recommendation.split('.').filter(r => r.trim()).map((rec, i) => (
                           <li key={i} className="flex items-start gap-2 text-sm text-surface-700">
                             <ArrowRight className="h-4 w-4 text-purple-500 flex-shrink-0 mt-0.5" />
                             {rec}

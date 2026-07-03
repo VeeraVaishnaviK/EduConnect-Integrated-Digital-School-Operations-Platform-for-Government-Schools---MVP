@@ -142,6 +142,7 @@ export interface Teacher {
   classTeacherOf?: string;
   avatar?: string;
   isActive: boolean;
+  status?: 'active' | 'on_leave' | 'inactive';
   address: string;
 }
 
@@ -164,6 +165,7 @@ export interface Student {
   bloodGroup?: string;
   aadharNumber?: string;
   isActive: boolean;
+  status?: 'active' | 'inactive' | 'at_risk';
   admissionDate: string;
   avatar?: string;
   scholarships?: string[];
@@ -265,6 +267,7 @@ export interface Circular {
   schoolId?: string;
   districtId?: string;
   isRead?: boolean;
+  readBy?: string[];
 }
 
 export interface Inspection {
@@ -328,6 +331,7 @@ export interface AIInsight {
   type: 'dropout_risk' | 'attendance_prediction' | 'weak_subject' | 'intervention' | 'workload' | 'health_score';
   title: string;
   description: string;
+  category: string;
   severity: Priority;
   affectedEntities: string[];
   recommendation: string;

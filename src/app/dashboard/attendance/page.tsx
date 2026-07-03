@@ -12,6 +12,7 @@ import {
 import { ChartCard, DashboardSection } from "@/components/dashboard/ChartCard";
 import { KPICard } from "@/components/dashboard/KPICard";
 import { StatusChip, ProgressBar } from "@/components/shared";
+import { useAuth } from "@/contexts/AuthContext";
 import { students } from "@/lib/mock-data/people";
 import { classWiseAttendance, monthlyAttendanceData, weeklyAttendanceData } from "@/lib/mock-data/operations";
 import { cn } from "@/lib/utils";
@@ -19,10 +20,13 @@ import { cn } from "@/lib/utils";
 type MarkingStatus = Record<string, "present" | "absent" | "late" | "leave">;
 
 export default function AttendancePage() {
+  const { user } = useAuth();
+  const isTeacher = user?.role === "teacher";
+
   const [selectedClass, setSelectedClass] = useState("10");
   const [selectedSection, setSelectedSection] = useState("A");
   const [selectedDate, setSelectedDate] = useState("2026-07-03");
-  const [view, setView] = useState<"mark" | "history" | "analytics">("mark");
+  const [view, setView] = useState<"mark" | "history" | "analytics">(isTeacher ? "mark" : "analytics");
   const [markings, setMarkings] = useState<MarkingStatus>(() => {
     const initial: MarkingStatus = {};
     students.filter((s) => s.className === "10" && s.section === "A").forEach((s) => {
@@ -64,7 +68,7 @@ export default function AttendancePage() {
       {/* View Tabs */}
       <div className="flex gap-1 bg-surface-100 rounded-lg p-1 w-fit">
         {[
-          { key: "mark", label: "Mark Attendance" },
+          ...(isTeacher ? [{ key: "mark", label: "Mark Attendance" }] : []),
           { key: "history", label: "History" },
           { key: "analytics", label: "Analytics" },
         ].map((tab) => (

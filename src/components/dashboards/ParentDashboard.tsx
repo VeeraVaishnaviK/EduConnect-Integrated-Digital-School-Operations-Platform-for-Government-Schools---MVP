@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ClipboardCheck, BarChart3, CalendarDays, MessageSquare, GraduationCap, BookOpen, Bell } from "lucide-react";
+import { ClipboardCheck, BarChart3, CalendarDays, MessageSquare, GraduationCap, BookOpen, Bell, ShieldCheck } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { KPICard } from "@/components/dashboard/KPICard";
 import { ChartCard } from "@/components/dashboard/ChartCard";
@@ -31,11 +31,10 @@ export function ParentDashboard() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <KPICard title="Attendance This Month" value="88%" icon={ClipboardCheck} iconColor="text-teal-600" iconBg="bg-teal-50" change={-3.2} changeType="decrease" changeLabel="vs last month" />
-        <KPICard title="Academic Performance" value="68.2%" icon={BarChart3} iconColor="text-primary-600" iconBg="bg-primary-50" />
-        <KPICard title="Pending Homework" value="3" icon={BookOpen} iconColor="text-warning-500" iconBg="bg-warning-50" />
-        <KPICard title="School Notices" value="4" icon={Bell} iconColor="text-info-500" iconBg="bg-info-50" />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <KPICard title="Attendance" value="88%" icon={ClipboardCheck} iconColor="text-teal-600" iconBg="bg-teal-50" change={-3.2} changeType="decrease" changeLabel="vs last month" />
+        <KPICard title="Student Performance" value="68.2%" icon={BarChart3} iconColor="text-primary-600" iconBg="bg-primary-50" />
+        <KPICard title="Circulars" value="4" icon={Bell} iconColor="text-info-500" iconBg="bg-info-50" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -55,18 +54,18 @@ export function ParentDashboard() {
         </ChartCard>
 
         {/* Academic Performance */}
-        <ChartCard title="Latest Exam Results" subtitle={performance?.examName || "First Quarterly Exam"}>
+        <ChartCard title="Student Performance (Latest Results)" subtitle={performance?.examName || "First Quarterly Exam"}>
           <div className="space-y-3">
             {performance?.subjects.map((sub) => (
               <div key={sub.subject} className="flex items-center gap-3">
                 <div className="w-24 text-xs font-medium text-surface-700">{sub.subject}</div>
                 <div className="flex-1">
                   <ProgressBar
-                    value={sub.obtainedMarks}
-                    max={sub.maxMarks}
-                    color={sub.obtainedMarks >= 75 ? "bg-success-500" : sub.obtainedMarks >= 50 ? "bg-warning-500" : "bg-danger-500"}
-                    size="sm"
-                  />
+                     value={sub.obtainedMarks}
+                     max={sub.maxMarks}
+                     color={sub.obtainedMarks >= 75 ? "bg-success-500" : sub.obtainedMarks >= 50 ? "bg-warning-500" : "bg-danger-500"}
+                     size="sm"
+                   />
                 </div>
                 <span className="text-xs font-bold text-surface-700 w-12 text-right">{sub.obtainedMarks}/{sub.maxMarks}</span>
               </div>
@@ -79,9 +78,9 @@ export function ParentDashboard() {
         </ChartCard>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* School Notices */}
-        <ChartCard title="School Notices" subtitle="Recent circulars">
+        <ChartCard title="Circulars" subtitle="Official notices and guidelines">
           <div className="space-y-3">
             {circulars.filter(c => c.targetAudience.includes("parent")).slice(0, 4).map((c) => (
               <div key={c.id} className="p-3 rounded-lg border border-surface-100 hover:border-surface-200 cursor-pointer">
@@ -92,25 +91,7 @@ export function ParentDashboard() {
           </div>
         </ChartCard>
 
-        {/* Holiday Calendar */}
-        <ChartCard title="Upcoming Holidays">
-          <div className="space-y-2">
-            {holidays.filter(h => new Date(h.date) > new Date("2026-07-01")).slice(0, 6).map((h) => (
-              <div key={h.id} className="flex items-center gap-3 py-2 px-2 rounded-lg hover:bg-surface-50">
-                <div className="w-10 h-10 rounded-lg bg-primary-50 flex flex-col items-center justify-center">
-                  <span className="text-[10px] font-bold text-primary-600">{new Date(h.date).toLocaleDateString("en", { month: "short" })}</span>
-                  <span className="text-xs font-bold text-primary-800">{new Date(h.date).getDate()}</span>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-surface-800">{h.name}</p>
-                  <p className="text-xs text-surface-400">{h.type}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </ChartCard>
-
-        {/* AI Summary */}
+        {/* AI Performance Summary */}
         <ChartCard title="AI Performance Summary">
           <div className="p-4 rounded-lg bg-gradient-to-br from-primary-50 to-teal-50 border border-primary-100">
             <p className="text-sm text-surface-700 leading-relaxed">
@@ -133,6 +114,55 @@ export function ParentDashboard() {
                 </li>
               </ul>
             </div>
+          </div>
+        </ChartCard>
+      </div>
+
+      {/* Disciplinary Report Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <ChartCard title="Disciplinary &amp; Conduct Report" subtitle="Official behavior and merit status" className="lg:col-span-1">
+          <div className="text-center p-4 space-y-4">
+            <div className="mx-auto w-14 h-14 rounded-full bg-success-50 border border-success-100 flex items-center justify-center text-success-600 shadow-sm animate-pulse-subtle">
+              <ShieldCheck className="h-7 w-7" />
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-surface-400 uppercase tracking-wider">Conduct Status</p>
+              <h3 className="text-base font-bold text-surface-800 mt-1">Perfect Record</h3>
+            </div>
+            <div className="grid grid-cols-2 gap-2 pt-2 border-t border-surface-100">
+              <div className="text-center">
+                <span className="text-[10px] font-semibold text-surface-400 uppercase block">Merit Points</span>
+                <span className="text-sm font-bold text-teal-600">15</span>
+              </div>
+              <div className="text-center">
+                <span className="text-[10px] font-semibold text-surface-400 uppercase block">Demerits</span>
+                <span className="text-sm font-bold text-success-600">0</span>
+              </div>
+            </div>
+          </div>
+        </ChartCard>
+
+        <ChartCard title="Teacher Remarks on Conduct" subtitle="Recent positive behaviors noted by instructors" className="lg:col-span-2">
+          <div className="space-y-3">
+            {[
+              { date: "2026-06-18", teacher: "Mr. S. Rajendran", remarks: "Helped organize the library catalog system during free periods. Great initiative!" },
+              { date: "2026-06-25", teacher: "Mrs. K. Ranjitha", remarks: "Assisted classmates with difficult algebra formulas after school hours." }
+            ].map((log, i) => (
+              <div key={i} className="p-3 rounded-lg border border-surface-150 flex items-start gap-3 bg-surface-50/20">
+                <div className="w-7 h-7 rounded-full bg-teal-50 text-teal-600 flex items-center justify-center font-bold text-xs flex-shrink-0">
+                  +
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between items-center text-[10px] text-surface-400">
+                    <span className="font-semibold">Issued by {log.teacher}</span>
+                    <span>{new Date(log.date).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</span>
+                  </div>
+                  <p className="text-xs text-surface-600 mt-1 italic">
+                    &quot;{log.remarks}&quot;
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
         </ChartCard>
       </div>

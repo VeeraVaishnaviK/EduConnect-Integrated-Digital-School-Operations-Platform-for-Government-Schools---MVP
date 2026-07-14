@@ -12,17 +12,16 @@ import {
 import { ChartCard, DashboardSection } from "@/components/dashboard/ChartCard";
 import { KPICard } from "@/components/dashboard/KPICard";
 import { StatusChip, ProgressBar } from "@/components/shared";
-import { useAuth } from "@/contexts/AuthContext";
 import { students } from "@/lib/mock-data/people";
 import { classWiseAttendance, monthlyAttendanceData, weeklyAttendanceData } from "@/lib/mock-data/operations";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
 
 type MarkingStatus = Record<string, "present" | "absent" | "late" | "leave">;
 
 export default function AttendancePage() {
   const { user } = useAuth();
   const isTeacher = user?.role === "teacher";
-
   const [selectedClass, setSelectedClass] = useState("10");
   const [selectedSection, setSelectedSection] = useState("A");
   const [selectedDate, setSelectedDate] = useState("2026-07-03");
@@ -49,6 +48,96 @@ export default function AttendancePage() {
     filteredStudents.forEach((s) => { updated[s.id] = status; });
     setMarkings(updated);
   };
+
+  if (user?.role === "student" || user?.role === "parent") {
+    const isParent = user.role === "parent";
+
+    return (
+      <div className="space-y-6 animate-fade-in">
+        <div>
+          <h1 className="text-2xl font-bold text-surface-900">Attendance Report</h1>
+          <p className="text-sm text-surface-500 mt-0.5">
+            {isParent ? `Track your child's attendance records` : "Track your school attendance records"} for Class 10-A
+          </p>
+        </div>
+
+        {/* Attendance Stats Cards */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="bg-white p-5 rounded-xl border border-surface-200 shadow-sm text-center">
+            <p className="text-xs font-semibold text-surface-400 uppercase tracking-wider">Overall Attendance</p>
+            <p className="text-3xl font-extrabold text-teal-600 mt-1">88%</p>
+            <p className="text-[10px] text-surface-400 mt-2">145 / 165 active days</p>
+          </div>
+          <div className="bg-white p-5 rounded-xl border border-surface-200 shadow-sm text-center">
+            <p className="text-xs font-semibold text-surface-400 uppercase tracking-wider">Present Days</p>
+            <p className="text-3xl font-extrabold text-emerald-600 mt-1">145</p>
+            <p className="text-[10px] text-emerald-500 font-medium mt-2">On-time arrivals</p>
+          </div>
+          <div className="bg-white p-5 rounded-xl border border-surface-200 shadow-sm text-center">
+            <p className="text-xs font-semibold text-surface-400 uppercase tracking-wider">Absent Days</p>
+            <p className="text-3xl font-extrabold text-danger-600 mt-1">15</p>
+            <p className="text-[10px] text-danger-500 font-medium mt-2">Excused leaves: 10</p>
+          </div>
+          <div className="bg-white p-5 rounded-xl border border-surface-200 shadow-sm text-center">
+            <p className="text-xs font-semibold text-surface-400 uppercase tracking-wider">Late Arrivals</p>
+            <p className="text-3xl font-extrabold text-amber-600 mt-1">5</p>
+            <p className="text-[10px] text-amber-500 font-medium mt-2">Grace period applied</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Monthly Trend */}
+          <div className="lg:col-span-2">
+            <ChartCard title="Monthly Attendance Trend" subtitle="Percentage attendance by month">
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={[
+                    { month: "Jun", percentage: 95 },
+                    { month: "Jul", percentage: 88 },
+                    { month: "Aug", percentage: 92 },
+                    { month: "Sep", percentage: 90 },
+                    { month: "Oct", percentage: 85 },
+                    { month: "Nov", percentage: 94 },
+                    { month: "Dec", percentage: 82 },
+                    { month: "Jan", percentage: 93 },
+                  ]}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                    <XAxis dataKey="month" tick={{ fill: "#64748b", fontSize: 12 }} />
+                    <YAxis domain={[70, 100]} tick={{ fill: "#64748b", fontSize: 12 }} />
+                    <Tooltip contentStyle={{ borderRadius: "8px", fontSize: "12px" }} />
+                    <Bar dataKey="percentage" fill="#0d9488" radius={[4, 4, 0, 0]} name="Attendance %" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </ChartCard>
+          </div>
+
+          {/* Absent Log */}
+          <div className="lg:col-span-1">
+            <ChartCard title="Leave &amp; Absence Log" subtitle="Recent anomalies in attendance record">
+              <div className="space-y-3">
+                {[
+                  { date: "2026-07-01", type: "late", label: "Late Arrival", desc: "Delayed due to heavy rainfall &amp; traffic block." },
+                  { date: "2026-06-12", type: "absent", label: "Absent (Excused)", desc: "Medical leave - submitted Doctor's certificate." },
+                  { date: "2026-05-05", type: "absent", label: "Absent (Excused)", desc: "Attended family function. Prior permission taken." },
+                ].map((log, index) => (
+                  <div key={index} className="p-3 rounded-lg border border-surface-150 space-y-1 bg-surface-50/50">
+                    <div className="flex justify-between items-center">
+                      <span className="text-[10px] text-surface-400 font-medium">
+                        {new Date(log.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                      </span>
+                      <StatusChip status={log.type} label={log.label} />
+                    </div>
+                    <p className="text-xs text-surface-600 italic">&quot;{log.desc}&quot;</p>
+                  </div>
+                ))}
+              </div>
+            </ChartCard>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 animate-fade-in">

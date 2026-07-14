@@ -28,6 +28,12 @@ import {
   ChevronRight,
   School,
   LucideIcon,
+  MessageSquare,
+  UserPlus,
+  CreditCard,
+  ShieldAlert,
+  Award,
+  User,
 } from "lucide-react";
 
 interface NavItem {
@@ -67,9 +73,31 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const { user, logout } = useAuth();
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
 
-  const filteredNav = navItems.filter(
+  let filteredNav = navItems.filter(
     (item) => user && item.roles.includes(user.role)
   );
+
+  if (user?.role === "student") {
+    filteredNav = [
+      { label: "Home", href: "/dashboard", icon: LayoutDashboard, roles: ["student"] },
+      { label: "My Course", href: "/dashboard/my-course", icon: BookOpen, roles: ["student"] },
+      { label: "My Course Feedback", href: "/dashboard/my-course-feedback", icon: MessageSquare, roles: ["student"] },
+      { label: "Enrollmentnew", href: "/dashboard/enrollmentnew", icon: UserPlus, roles: ["student"] },
+      { label: "Attendance", href: "/dashboard/attendance", icon: ClipboardCheck, roles: ["student"] },
+      { label: "Assignment", href: "/dashboard/assignment", icon: FileText, roles: ["student"] },
+      { label: "Examination", href: "/dashboard/examination", icon: GraduationCap, roles: ["student"] },
+      { label: "Disciplinary", href: "/dashboard/disciplinary", icon: ShieldAlert, roles: ["student"] },
+      { label: "Raise Infra Issue", href: "/dashboard/raise-infra-issue", icon: Building2, roles: ["student"] },
+      { label: "My Profile", href: "/dashboard/my-profile", icon: User, roles: ["student"] },
+    ];
+  } else if (user?.role === "parent") {
+    filteredNav = [
+      { label: "Circulars", href: "/dashboard/circulars", icon: ScrollText, roles: ["parent"] },
+      { label: "Student Performance", href: "/dashboard/performance", icon: BarChart3, roles: ["parent"] },
+      { label: "Attendance", href: "/dashboard/attendance", icon: ClipboardCheck, roles: ["parent"] },
+      { label: "Disciplinary", href: "/dashboard/disciplinary", icon: ShieldAlert, roles: ["parent"] },
+    ];
+  }
 
   const toggleExpand = (label: string) => {
     setExpandedItems((prev) =>

@@ -1,12 +1,44 @@
 "use client";
 
 import React from "react";
-import { ClipboardCheck, BookOpen, Calendar, Trophy, BarChart3, Bell, Clock } from "lucide-react";
+import Link from "next/link";
+import {
+  ClipboardCheck,
+  BookOpen,
+  Calendar,
+  Trophy,
+  BarChart3,
+  Bell,
+  Clock,
+  LayoutDashboard,
+  MessageSquare,
+  UserPlus,
+  FileText,
+  GraduationCap,
+  CreditCard,
+  ShieldAlert,
+  Award,
+  Building2,
+  User
+} from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from "recharts";
 import { KPICard } from "@/components/dashboard/KPICard";
 import { ChartCard } from "@/components/dashboard/ChartCard";
 import { ProgressBar, StatusChip } from "@/components/shared";
 import { academicPerformances, holidays, circulars } from "@/lib/mock-data/operations";
+
+const quickNavItems = [
+  { label: "Home", href: "/dashboard", icon: LayoutDashboard },
+  { label: "My Course", href: "/dashboard/my-course", icon: BookOpen },
+  { label: "My Course Feedback", href: "/dashboard/my-course-feedback", icon: MessageSquare },
+  { label: "Enrollmentnew", href: "/dashboard/enrollmentnew", icon: UserPlus },
+  { label: "Attendance", href: "/dashboard/attendance", icon: ClipboardCheck },
+  { label: "Assignment", href: "/dashboard/assignment", icon: FileText },
+  { label: "Examination", href: "/dashboard/examination", icon: GraduationCap },
+  { label: "Disciplinary", href: "/dashboard/disciplinary", icon: ShieldAlert },
+  { label: "Raise Infra Issue", href: "/dashboard/raise-infra-issue", icon: Building2 },
+  { label: "My Profile", href: "/dashboard/my-profile", icon: User },
+];
 
 const timetable = [
   { time: "08:30", subject: "Tamil", teacher: "Mr. S. Rajendran" },
@@ -48,6 +80,30 @@ export function StudentDashboard() {
         <p className="text-sm text-surface-500 mt-0.5">
           Arun Kumar S — Class 10-A, Roll No. 1, GHSS Nagercoil
         </p>
+      </div>
+
+      {/* Quick Navigation Grid */}
+      <div className="bg-white p-6 rounded-xl border border-surface-200 shadow-sm">
+        <h2 className="text-base font-bold text-surface-900 mb-4">Quick Navigation</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+          {quickNavItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.label}
+                href={item.href}
+                className="flex flex-col items-center justify-center p-4 rounded-xl border border-surface-100 hover:border-teal-500/30 hover:bg-teal-50/10 transition-all duration-200 group text-center"
+              >
+                <div className="w-10 h-10 rounded-lg bg-teal-50 group-hover:bg-teal-100 flex items-center justify-center text-teal-600 transition-colors mb-2">
+                  <Icon className="h-5 w-5" />
+                </div>
+                <span className="text-xs font-semibold text-surface-700 group-hover:text-teal-700 transition-colors leading-tight">
+                  {item.label}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
